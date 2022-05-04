@@ -16,7 +16,8 @@ t_head2 = ["CONFIG_TARGET_ramips_mt7621_DEVICE_xiaomi_mi-router-4a-gigabit=y",
     "CONFIG_TARGET_ramips_mt7621_DEVICE_xiaomi_mi-router-3-pro=y"]
 
 # 1.config为小闪存机型配置，2.config为大闪存机型配置
-conf_files = ["preset-models/1.config", "preset-models/2.config", "preset-models/temp.config"]
+conf_files = ["preset-models/1.config", "preset-models/2.config", "preset-models/temp.config",
+             "preset-models/clone.sh", "preset-models/modify.sh"]
 
 m = t_head2.index("CONFIG_TARGET_ramips_mt7621_DEVICE_" + sys.argv[1] + "=y")
 
@@ -32,15 +33,15 @@ with open(conf_files[n]) as orig_conf, open(conf_files[2], "w") as co_conf:
     co_conf.writelines(orig_conf.readlines())
 
 if m == 0 or m == 1:
-    with open("preset-models/modify.sh", "a") as f_modi:
+    with open(conf_files[4], "a") as f_modi:
         f_modi.write(". extra-files/mi-router-4a-3g-v2.sh\n")
 elif m == 2:
-    with open("preset-models/modify.sh", "a") as f_modi:
-        f_modi.write("patch -p1 < extra-files/phicomm_mod.patch\n")
+    with open(conf_files[3], "a") as f_clon:
+        f_clon.write("patch -p1 < extra-files/phicomm_mod.patch\n")
 
 # 小内存机型使用xray-core 1.4.5
 if m < 3
-    with open("preset-models/modify.sh", "a") as f_modi:
+    with open(conf_files[4], "a") as f_modi:
         f_modi.write("patch -p1 < extra-files/xray-core.patch\n")
 
 print(m + 1)
