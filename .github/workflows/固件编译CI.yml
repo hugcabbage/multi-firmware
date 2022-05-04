@@ -68,7 +68,6 @@ env:
   TEMP_CONFIG: preset-models/temp.config
   SELECT_PY: preset-models/select.py
   RELEASE_JSON: preset-models/release.json
-  PHICOMM_MOD_PATCH: extra-files/phicomm_mod.patch
   UNBLOCKMUSIC_SH: extra-files/unblockmusic.sh
 jobs:
   build_openwrt:
@@ -107,7 +106,6 @@ jobs:
         run: |
           [ ${{ github.event.inputs.cpu_overclock }} == 'true' ] && sed -i '/fix-cpu-clk/ s/#//' $MODIFY_SH
           [ ${{ github.event.inputs.kernel_5_15 }} == 'true' ] && sed -i '/KERNEL_PATCHVER:=5.15/ s/#//' $MODIFY_SH
-          [ ${{ github.event.inputs.model }} == 'phicomm_k2p'] && patch -p1 < $PHICOMM_MOD_PATCH
           [ ${{ github.event.inputs.unblockmusic }} == 'true' ] && chmod +x $UNBLOCKMUSIC_SH && $UNBLOCKMUSIC_SH
           chmod +x $MODIFY_SH
           $MODIFY_SH

@@ -1,0 +1,221 @@
+--- a/package/myapps/passwall-dependencies/xray-core/files/vpoint_vmess_freedom.json
++++ b/package/myapps/passwall-dependencies/xray-core/files/vpoint_vmess_freedom.json
+@@ -6,7 +6,8 @@
+       "clients": [
+         {
+           "id": "23ad6b10-8d1a-40f7-8ad0-e3e35cd38297",
+-          "level": 1
++          "level": 1,
++          "alterId": 64
+         }
+       ]
+     }
+--- a/package/myapps/passwall-dependencies/xray-core/files/xray.capabilities
++++ b/package/myapps/passwall-dependencies/xray-core/files/xray.capabilities
+@@ -0,0 +1,10 @@
++{
++	"ambient": [
++		"CAP_NET_ADMIN",
++		"CAP_NET_BIND_SERVICE"
++	],
++	"bounding": [
++		"CAP_NET_ADMIN",
++		"CAP_NET_BIND_SERVICE"
++	]
++}
+--- a/package/myapps/passwall-dependencies/xray-core/files/xray.conf
++++ b/package/myapps/passwall-dependencies/xray-core/files/xray.conf
+@@ -5,7 +5,7 @@
+ config xray 'config'
+ 	option confdir '/etc/xray'
+ 	list conffiles '/etc/xray/config.json'
+-	option datadir '/usr/share/v2ray'
++	option datadir '/usr/share/xray'
+ 	option dialer ''
+ 	option format 'json'
+ 
+--- a/package/myapps/passwall-dependencies/xray-core/files/xray.init
++++ b/package/myapps/passwall-dependencies/xray-core/files/xray.init
+@@ -5,6 +5,7 @@
+ 
+ CONF="xray"
+ PROG="/usr/bin/xray"
++CAPA_FILE="/etc/capabilities/xray.json"
+ 
+ start_service() {
+ 	config_load "$CONF"
+@@ -21,7 +22,7 @@
+ 
+ 	config_get confdir "config" "confdir"
+ 	config_get conffiles "config" "conffiles"
+-	config_get datadir "config" "datadir" "/usr/share/v2ray"
++	config_get datadir "config" "datadir" "/usr/share/xray"
+ 	config_get dialer "config" "dialer"
+ 	config_get format "config" "format" "json"
+ 
+@@ -43,6 +44,12 @@
+ 	procd_set_param stderr 1
+ 	procd_set_param respawn
+ 
++	[ -x "/sbin/ujail" -a -e "$CAPA_FILE" ] && {
++		procd_add_jail "$CONF"
++		procd_set_param capabilities "$CAPA_FILE"
++		procd_set_param user nobody
++		procd_set_param no_new_privs 1
++	}
+ 	procd_close_instance
+ }
+ 
+--- a/package/myapps/passwall-dependencies/xray-core/Makefile
++++ b/package/myapps/passwall-dependencies/xray-core/Makefile
+@@ -1,23 +1,35 @@
+ include $(TOPDIR)/rules.mk
+ 
+-PKG_NAME:=Xray-core
+-PKG_VERSION:=1.5.5
++PKG_NAME:=xray-core
++PKG_VERSION:=1.4.5
+ PKG_RELEASE:=$(AUTORELEASE)
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/XTLS/Xray-core/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=3f8d04fef82a922c83bab43cac6c86a76386cf195eb510ccf1cc175982693893
++PKG_HASH:=54c6a687dd463b25afe8d8eb44d37e18b8177f58308207cd1d74f6cd04619854
++
++#PKG_SOURCE_PROTO:=git
++#PKG_SOURCE_URL:=https://github.com/XTLS/xray-core.git
++#PKG_MIRROR_HASH:=19f3017d8279acc28d242d18689b95a39ca00a286e72329552d114f04a861ecb
++#PKG_SOURCE_VERSION:=c345d4818efa763b07961d6c132afe1cf91845de
++#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
+ 
+ PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
+ PKG_LICENSE:=MPL-2.0
+ PKG_LICENSE_FILES:=LICENSE
+ 
++PKG_CONFIG_DEPENDS:= \
++	CONFIG_XRAY_CORE_COMPRESS_GOPROXY \
++	CONFIG_XRAY_CORE_COMPRESS_UPX \
++
++PKG_BUILD_DIR:=$(BUILD_DIR)/Xray-core-$(PKG_VERSION)
+ PKG_BUILD_DEPENDS:=golang/host
+ PKG_BUILD_PARALLEL:=1
+ PKG_USE_MIPS16:=0
+ 
+ GO_PKG:=github.com/xtls/xray-core
+-GO_PKG_BUILD_PKG:=$(GO_PKG)/main
++GO_PKG_BUILD_PKG:=github.com/xtls/xray-core/main
++GO_PKG_LDFLAGS:=-s -w
+ GO_PKG_LDFLAGS_X:= \
+ 	$(GO_PKG)/core.build=OpenWrt \
+ 	$(GO_PKG)/core.version=$(PKG_VERSION)
+@@ -44,8 +56,15 @@
+   PKGARCH:=all
+ endef
+ 
++define Package/xray-geodata
++  $(call Package/xray/template)
++  TITLE+= (geodata files)
++  DEPENDS:=xray-core
++  PKGARCH:=all
++endef
++
+ define Package/xray/description
+-  Xray, Penetrates Everything. It helps you to build your own computer network.
++  Xray, Penetrates Everything. Also the best v2ray-core, with XTLS support. Fully compatible configuration.
+   It secures your network connections and thus protects your privacy.
+ endef
+ 
+@@ -59,9 +78,70 @@
+   This includes example configuration files for xray-core.
+ endef
+ 
++define Package/xray-geodata/description
++  $(call Package/xray/description)
++
++  This includes GEO datas used for xray-core.
++endef
++
++define Package/xray-core/config
++menu "Xray-core Configuration"
++	depends on PACKAGE_xray-core
++
++config XRAY_CORE_COMPRESS_GOPROXY
++	bool "Compiling with GOPROXY proxy"
++	default n
++
++config XRAY_CORE_COMPRESS_UPX
++	bool "Compress executable files with UPX"
++	default y
++endmenu
++endef
++
+ define Package/xray-core/conffiles
+ /etc/xray/
+ /etc/config/xray
++/usr/share/xray
++endef
++
++GEOIP_VER:=202109062209
++GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
++
++define Download/geoip
++  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOIP_VER)/
++  URL_FILE:=geoip.dat
++  FILE:=$(GEOIP_FILE)
++  HASH:=3f347a3ff4a849cea4d0144565d2fa85f40a52b5c15cda4d43eefec57cbff3e8
++endef
++
++GEOSITE_VER:=202109062209
++GEOSITE_FILE:=geosite.dat.$(GEOSITE_VER)
++
++define Download/geosite
++  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOSITE_VER)/
++  URL_FILE:=geosite.dat
++  FILE:=$(GEOSITE_FILE)
++  HASH:=2a6d667bdfb345c919608b0c3a296e172ceb15eb0bf8488fa7fc06316db16840
++endef
++
++ifneq ($(CONFIG_XRAY_CORE_COMPRESS_GOPROXY),)
++	export GO111MODULE=on
++	export GOPROXY=https://goproxy.io
++endif
++
++define Build/Prepare
++	$(call Build/Prepare/Default)
++ifneq ($(CONFIG_PACKAGE_xray-geodata),)
++	$(call Download,geoip)
++	$(call Download,geosite)
++endif
++endef
++
++define Build/Compile
++	$(call GoPackage/Build/Compile)
++ifneq ($(CONFIG_XRAY_CORE_COMPRESS_UPX),)
++	$(STAGING_DIR_HOST)/bin/upx --lzma --best $(GO_PKG_BUILD_BIN_DIR)/main
++endif
+ endef
+ 
+ define Package/xray-core/install
+@@ -76,6 +156,9 @@
+ 	$(INSTALL_CONF) $(CURDIR)/files/xray.conf $(1)/etc/config/xray
+ 	$(INSTALL_DIR) $(1)/etc/init.d/
+ 	$(INSTALL_BIN) $(CURDIR)/files/xray.init $(1)/etc/init.d/xray
++
++	$(INSTALL_DIR) $(1)/etc/capabilities/
++	$(INSTALL_DATA) $(CURDIR)/files/xray.capabilities $(1)/etc/capabilities/xray.json
+ endef
+ 
+ define Package/xray-example/install
+@@ -84,5 +167,12 @@
+ 	$(INSTALL_DATA) $(CURDIR)/files/vpoint_vmess_freedom.json $(1)/etc/xray/
+ endef
+ 
++define Package/xray-geodata/install
++	$(INSTALL_DIR) $(1)/usr/share/xray/
++	$(INSTALL_DATA) $(DL_DIR)/$(GEOIP_FILE) $(1)/usr/share/xray/geoip.dat
++	$(INSTALL_DATA) $(DL_DIR)/$(GEOSITE_FILE) $(1)/usr/share/xray/geosite.dat
++endef
++
+ $(eval $(call BuildPackage,xray-core))
+ $(eval $(call BuildPackage,xray-example))
++$(eval $(call BuildPackage,xray-geodata))

@@ -34,5 +34,13 @@ with open(conf_files[n]) as orig_conf, open(conf_files[2], "w") as co_conf:
 if m == 0 or m == 1:
     with open("preset-models/modify.sh", "a") as f_modi:
         f_modi.write(". extra-files/mi-router-4a-3g-v2.sh\n")
+elif m == 2:
+    with open("preset-models/modify.sh", "a") as f_modi:
+        f_modi.write("patch -p1 < extra-files/phicomm_mod.patch\n")
+
+# 小内存机型使用xray-core 1.4.5
+if m < 3
+    with open("preset-models/modify.sh", "a") as f_modi:
+        f_modi.write("patch -p1 < extra-files/xray-core.patch\n")
 
 print(m + 1)
