@@ -30,9 +30,6 @@ elif m == 2:
 
 if m < 3:
     n = 0
-    # 小内存机型使用xray-core 1.4.5
-    with open(conf_files[4], "a") as f_modi:
-        f_modi.write("patch -p1 < extra-files/xray-core.patch\n")
 else:
     n =1
 
