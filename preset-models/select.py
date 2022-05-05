@@ -31,7 +31,7 @@ elif m == 2:
 if m < 3:
     n = 0
 else:
-    n =1
+    n = 1
 
 with open(conf_files[n]) as orig_conf, open(conf_files[2], "w") as co_conf:
     for t in t_head1:
