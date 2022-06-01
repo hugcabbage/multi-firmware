@@ -118,7 +118,6 @@ jobs:
         run: |
           make download -j8 || make download -j1 V=s
           rm -rf $(find ./dl/ -size -1024c)
-          df -h
       - name: 编译
         run: |
           make -j$(nproc) || make -j1 V=s
@@ -152,10 +151,12 @@ jobs:
           repo_token: ${{ secrets.RELEASE_FIRMWARE }}
           file: collected_firmware/*
           tag: ${{ env.TAG_NAME }}
-          release_name: "${{ env.RELEASE_PRE }} ${{ env.RELEASE_TITLE }}" 
+          release_name: ${{ env.RELEASE_PRE }} ${{ env.RELEASE_TITLE }}
           overwrite: true
           prerelease: false
-          body: "${{ env.BODY_CONTENT }}<br/>${{ github.event.inputs.version_description }}"
+          body: |
+            ${{ env.RELEASE_PRE }} ${{ env.BODY_CONTENT }}
+            ${{ github.event.inputs.version_description }}
           file_glob: true
         env:
           RELEASE_FIRMWARE_VALUE: ${{ secrets.RELEASE_FIRMWARE }}
