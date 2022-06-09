@@ -15,3 +15,6 @@ svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
 git clone https://github.com/xiaorouji/openwrt-passwall.git passwall-dependencies
 svn co https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
 svn co https://github.com/xiaorouji/openwrt-passwall2/trunk/luci-app-passwall2
+svn co https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
+svn co https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
+git clone https://github.com/zzsj0928/luci-app-pushbot
