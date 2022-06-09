@@ -147,8 +147,7 @@ jobs:
           if [[ $MODEL_NA == xiaomi_mi-router-ac2100 || $MODEL_NA == xiaomi_redmi-router-ac2100 ]]
           then
               CURRENT_TIME=$(TZ=Asia/Shanghai date -d '+1 year' +'%y.%-m.%-d')
-              CURRENT_TIME=${CURRENT_TIME:1}
-              echo "RELEASE_PRE=${CURRENT_TIME%.*}" >> $GITHUB_ENV
+              echo "RELEASE_PRE=${CURRENT_TIME:1}" >> $GITHUB_ENV
           fi
       - name: 上传固件到release
         id: upload-release
