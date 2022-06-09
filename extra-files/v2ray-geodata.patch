@@ -4,21 +4,21 @@
  
  include $(INCLUDE_DIR)/package.mk
  
--GEOIP_VER:=202204210050
-+GEOIP_VER:=202204252212
+-GEOIP_VER:=202205260055
++GEOIP_VER:=202206082211
  GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
  define Download/geoip
 -  URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
 +  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOIP_VER)/
    URL_FILE:=geoip.dat
    FILE:=$(GEOIP_FILE)
--  HASH:=9414426b105894bbacd6e913d180e4d86c32bd08d468f08b8ea8d4f9ecd6674c
-+  HASH:=3659d8c74f02a88567b8843710d72758de4ed4e0ec09bd42a05029e02744a04d
+-  HASH:=c9eb7a4897a7bdafad5d4a71f966345674bd7f3f8ab487cb05599ed17b325106
++  HASH:=6d1918d1b4a939914fcd267d6a8f7ddd10bc483eb2ba89ac2ddf5b6ce247131b
  endef
  
--GEOSITE_VER:=20220425025949
+-GEOSITE_VER:=20220528180904
 -GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
-+GEOSITE_VER:=202204252212
++GEOSITE_VER:=202206082211
 +GEOSITE_FILE:=geosite.dat.$(GEOSITE_VER)
  define Download/geosite
 -  URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
@@ -26,8 +26,8 @@
 +  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOSITE_VER)/
 +  URL_FILE:=geosite.dat
    FILE:=$(GEOSITE_FILE)
--  HASH:=9065ea5d6fa20acf3e1a687b1c33f8669c48bf61b4979768ce2f50fe507053ee
-+  HASH:=6775adf6977712a073fe27a3bd39fc18a2ca3fcac6473b3381dbd979b3e39d9a
+-  HASH:=d0c9f3cbf7925c33dfb8fb9578cdfa6733fc9f19c2ccfb4cba5a6415a14afe5c
++  HASH:=90603c89bf23fe5d7dccbe65abb2d9cef65cc73bc9b9ce438acf1c7cd4fcd630
  endef
  
  define Package/v2ray-geodata/template
