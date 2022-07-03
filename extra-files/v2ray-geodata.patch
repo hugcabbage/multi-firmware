@@ -1,5 +1,5 @@
---- a/package/passwall-dependencies/v2ray-geodata/Makefile
-+++ b/package/passwall-dependencies/v2ray-geodata/Makefile
+--- a/package/myapps/passwall-dependencies/v2ray-geodata/Makefile
++++ b/package/myapps/passwall-dependencies/v2ray-geodata/Makefile
 @@ -12,22 +12,22 @@
  
  include $(INCLUDE_DIR)/package.mk
