@@ -1,24 +1,24 @@
---- a/package/myapps/passwall-dependencies/v2ray-geodata/Makefile
-+++ b/package/myapps/passwall-dependencies/v2ray-geodata/Makefile
+--- a/package/passwall-dependencies/v2ray-geodata/Makefile
++++ b/package/passwall-dependencies/v2ray-geodata/Makefile
 @@ -12,22 +12,22 @@
  
  include $(INCLUDE_DIR)/package.mk
  
--GEOIP_VER:=202205260055
-+GEOIP_VER:=202206082211
+-GEOIP_VER:=202206160052
++GEOIP_VER:=202207022211
  GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
  define Download/geoip
 -  URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
 +  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOIP_VER)/
    URL_FILE:=geoip.dat
    FILE:=$(GEOIP_FILE)
--  HASH:=c9eb7a4897a7bdafad5d4a71f966345674bd7f3f8ab487cb05599ed17b325106
-+  HASH:=6d1918d1b4a939914fcd267d6a8f7ddd10bc483eb2ba89ac2ddf5b6ce247131b
+-  HASH:=35b18994e541e5c3e3d64a39af0d2f81f7d88cc7c87bfba5ea5f20a51390a4c6
++  HASH:=3f483dee1f00d738f16473246552ceff09b73175cefea7ab4eb821b0039d693c
  endef
  
--GEOSITE_VER:=20220528180904
+-GEOSITE_VER:=20220620091914
 -GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
-+GEOSITE_VER:=202206082211
++GEOSITE_VER:=202207022211
 +GEOSITE_FILE:=geosite.dat.$(GEOSITE_VER)
  define Download/geosite
 -  URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
@@ -26,8 +26,8 @@
 +  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOSITE_VER)/
 +  URL_FILE:=geosite.dat
    FILE:=$(GEOSITE_FILE)
--  HASH:=d0c9f3cbf7925c33dfb8fb9578cdfa6733fc9f19c2ccfb4cba5a6415a14afe5c
-+  HASH:=90603c89bf23fe5d7dccbe65abb2d9cef65cc73bc9b9ce438acf1c7cd4fcd630
+-  HASH:=10555c5a6de954b362bbaf6059a61209bbebc920e67650d6eef184bb846516f5
++  HASH:=3614558e79ae790eb89cf80ded81082bcce2f7d094a4db3457fcca6117226e14
  endef
  
  define Package/v2ray-geodata/template
